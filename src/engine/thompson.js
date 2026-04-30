@@ -30,10 +30,13 @@ function buildNFA(node) {
     },
   ];
   const transitions = [];
+
   fill(node, start, accept, states, transitions);
+
   const usedSymbols = [
     ...new Set(transitions.map((t) => t.symbol).filter((s) => s !== "ε")),
   ];
+
   return { type: "NFA", alphabet: usedSymbols, states, transitions, meta: {} };
 }
 
@@ -91,14 +94,6 @@ function fill(node, from, to, states, transitions) {
     const mid = newId();
     addState(mid);
     fill(node.child, from, mid, states, transitions);
-    const s1 = newId(),
-      a1 = newId();
-    addState(s1);
-    addState(a1);
-    addTrans(mid, s1, "ε");
-    addTrans(mid, to, "ε");
-    addTrans(a1, s1, "ε");
-    addTrans(a1, to, "ε");
-    fill(node.child, s1, a1, states, transitions);
+    fill({ type: "STAR", child: node.child }, mid, to, states, transitions);
   }
 }

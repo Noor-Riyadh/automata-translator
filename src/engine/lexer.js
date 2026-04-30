@@ -3,8 +3,7 @@ export function tokenize(regex) {
   for (const ch of regex) {
     if (/[a-z0-9]/.test(ch)) tokens.push({ type: "LITERAL", value: ch });
     else if (ch === "|") tokens.push({ type: "UNION" });
-    else if (ch === "+")
-      tokens.push({ type: "PLUS" }); // new token type
+    else if (ch === "+") tokens.push({ type: "PLUS" });
     else if (ch === "*") tokens.push({ type: "STAR" });
     else if (ch === "?") tokens.push({ type: "OPT" });
     else if (ch === "(") tokens.push({ type: "LPAREN" });
