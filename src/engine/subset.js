@@ -135,3 +135,18 @@ export function nfaToDFA(nfa) {
     },
   };
 }
+// testString — simulates a DFA on an input string
+// Returns true if the DFA accepts the string, false if it rejects
+export function testString(dfa, input) {
+  let current = dfa.states.find((s) => s.isStart).id;
+
+  for (const ch of input) {
+    const t = dfa.transitions.find(
+      (t) => t.from === current && t.symbol === ch,
+    );
+    if (!t) return false; // no transition = reject
+    current = t.to;
+  }
+
+  return dfa.states.find((s) => s.id === current)?.isAccept ?? false;
+}
