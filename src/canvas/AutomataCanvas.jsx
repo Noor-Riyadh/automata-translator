@@ -8,7 +8,9 @@ const AutomataCanvas = ({ nodes = [], edges = [], activeStateId, onStep }) => {
     g.setDefaultEdgeLabel(() => ({}));
 
     nodes.forEach((n) => g.setNode(n.id, { ...n, width: 60, height: 60 }));
-    edges.forEach((e) => g.setEdge(e.from, e.to, { label: e.label }));
+    edges.forEach((e) => g.setEdge(e.from, e.to, { label: e.symbol }));
+    // edges.forEach((e) => g.setEdge(e.from, e.to, { label: e.symbol ?? e.label }));
+
 
     dagre.layout(g);
     return g;

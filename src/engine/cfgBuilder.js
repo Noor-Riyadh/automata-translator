@@ -1,14 +1,19 @@
 export function dfaToCFG(dfa) {
   const rules = [];
-  dfa.states.forEach((state) => {
-    const transitions = dfa.transitions.filter((t) => t.from === state.id);
-    transitions.forEach((t) => {
-      const symbol = t.label || "";
-      rules.push(`${state.label} → ${symbol} ${t.to}`);
-    });
-    if (state.isAccept) {
-      rules.push(`${state.label} → ε`);
+
+  for (const t of dfa.transitions) {
+    // Skip transitions involving the dead state
+    if (t.from === "∅" || t.to === "∅") continue;
+    rules.push(`${t.from} → ${t.symbol} ${t.to}`);
+  }
+
+  for (const s of dfa.states) {
+    // Skip dead state, only add ε for accept states
+    if (s.id === "∅") continue;
+    if (s.isAccept) {
+      rules.push(`${s.id} → ε`);
     }
-  });
+  }
+
   return { rules };
 }
