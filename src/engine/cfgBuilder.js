@@ -1,13 +1,14 @@
 export function dfaToCFG(dfa) {
   const rules = [];
-  for (const t of dfa.transitions) {
-    rules.push(`${t.from} → ${t.symbol} ${t.to}`);
-  }
-
-  for (const s of dfa.states) {
-    if (s.isAccept) {
-      rules.push(`${s.id} → ε`);
+  dfa.states.forEach((state) => {
+    const transitions = dfa.transitions.filter((t) => t.from === state.id);
+    transitions.forEach((t) => {
+      const symbol = t.label || "";
+      rules.push(`${state.label} → ${symbol} ${t.to}`);
+    });
+    if (state.isAccept) {
+      rules.push(`${state.label} → ε`);
     }
-  }
+  });
   return { rules };
 }

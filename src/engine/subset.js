@@ -1,19 +1,10 @@
-import { regexToNFA } from "./thompson.js";
-// subset.js
-// Block 1: ε-closure
-// ─────────────────────────────────────────────────────────────
-// epsilonClosure(transitions, stateIdSet) → Set of state id strings
-//
-// transitions : the full nfa.transitions array from AutomataObject
-// stateIdSet  : a JS Set of state id strings (e.g. new Set(['q0']))
-
 function epsilonClosure(transitions, stateIdSet) {
   const closure = new Set(stateIdSet);
   const stack = [...stateIdSet];
   while (stack.length > 0) {
     const state = stack.pop();
     for (const t of transitions) {
-      if (t.from === state && t.symbol === "ε") {
+      if (t.from === state && (t.symbol === "ε" || t.label === "ε")) {
         if (!closure.has(t.to)) {
           closure.add(t.to);
           stack.push(t.to);
@@ -24,114 +15,114 @@ function epsilonClosure(transitions, stateIdSet) {
   return closure;
 }
 
-// ─── Block 2: move ────────────────────────────────────────────
-// Theory: move(T, a) = all NFA states reachable from any state
-//         in T by consuming exactly one input symbol 'a'.
-//         No ε-transitions are followed here.
-//
-// @param transitions  - nfa.transitions array  [{from, to, symbol}]
-// @param stateIdSet   - a Set of NFA state id strings (a DFA "state")
-// @param symbol       - a single input character e.g. 'a' or 'b'
-// @returns            - a new Set of NFA state id strings
-function move(transitions, stateIdSet, symbol) {
+function move(transitions, stateIdSet, char) {
   const result = new Set();
-
   for (const t of transitions) {
-    if (stateIdSet.has(t.from) && t.symbol === symbol) {
+    const transitionChar = t.symbol || t.label;
+    if (stateIdSet.has(t.from) && transitionChar === char) {
       result.add(t.to);
     }
   }
   return result;
 }
 
-// ─── Block 3: nfaToDFA skeleton ───────────────────────────────
-// Theory: DFA states are subsets of NFA states.
-//         Initial DFA state = ε-closure({ nfa_start }).
-//         BFS explores all reachable subsets systematically.
-
 export function nfaToDFA(nfa) {
-  // A: Canonical string key for a Set of NFA state IDs
   const setKey = (s) => [...s].sort().join(",");
-
-  // B: Derive real alphabet from transitions (fixes hardcoded bug)
   const alphabet = [
-    ...new Set(nfa.transitions.map((t) => t.symbol).filter((s) => s !== "ε")),
+    ...new Set(
+      nfa.transitions
+        .map((t) => t.symbol || t.label)
+        .filter((s) => s && s !== "ε"),
+    ),
   ];
 
-  // C: Compute the initial DFA state
   const nfaStart = nfa.states.find((s) => s.isStart).id;
   const startClosure = epsilonClosure(nfa.transitions, new Set([nfaStart]));
   const startKey = setKey(startClosure);
 
-  // D: BFS data structures
   const queue = [startClosure];
   const visited = new Set([startKey]);
   const dfaStatesMap = new Map();
-  const dfaTransitions = [];
+  const rawTransitions = [];
 
   dfaStatesMap.set(startKey, startClosure);
-
-  // ─── Block 4: BFS loop ────────────────────────────────────────
-  // Theory: Process each DFA state (NFA subset) by computing
-  //         ε-closure(move(T, a)) for every symbol a in alphabet.
 
   while (queue.length > 0) {
     const currentSet = queue.shift();
     const currentKey = setKey(currentSet);
-    for (const symbol of alphabet) {
-      const moved = move(nfa.transitions, currentSet, symbol);
+
+    for (const char of alphabet) {
+      const moved = move(nfa.transitions, currentSet, char);
       const nextSet = epsilonClosure(nfa.transitions, moved);
-      const nextKey = setKey(nextSet);
-      dfaTransitions.push({ from: currentKey, to: nextKey, symbol });
-      if (!visited.has(nextKey)) {
-        visited.add(nextKey);
-        dfaStatesMap.set(nextKey, nextSet);
-        queue.push(nextSet);
+
+      if (nextSet.size > 0) {
+        const nextKey = setKey(nextSet);
+
+        rawTransitions.push({ from: currentKey, to: nextKey, label: char });
+
+        if (!visited.has(nextKey)) {
+          visited.add(nextKey);
+          dfaStatesMap.set(nextKey, nextSet);
+          queue.push(nextSet);
+        }
       }
     }
   }
-  // ─── Block 5: Output assembly ─────────────────────────────────
-  // Theory: A DFA state is accepting iff it contains
-  //         at least one NFA accepting state.
 
-  // A: Collect NFA accept state IDs for fast lookup
+  const stateKeys = Array.from(dfaStatesMap.keys());
+  const idMapping = {};
+  stateKeys.forEach((key, index) => {
+    idMapping[key] = `S${index}`;
+  });
+
   const nfaAcceptIds = new Set(
     nfa.states.filter((s) => s.isAccept).map((s) => s.id),
   );
 
-  // B: Build DFA states array
   const dfaStates = [];
-
   for (const [key, nfaSubset] of dfaStatesMap) {
     const isStart = key === startKey;
     const isAccept = [...nfaSubset].some((id) => nfaAcceptIds.has(id));
-    const label = key === "" ? "∅" : key;
 
     dfaStates.push({
-      id: key,
-      label: label,
+      id: idMapping[key],
+      label: idMapping[key],
       isStart: isStart,
       isAccept: isAccept,
       position: { x: 0, y: 0 },
     });
   }
 
-  // C: DFA transitions (already correct shape from Block 4)
-  const dfaTransitionObjects = dfaTransitions.map((t) => ({
-    from: t.from,
-    to: t.to,
-    symbol: t.symbol,
+  const dfaTransitions = rawTransitions.map((t) => ({
+    from: idMapping[t.from],
+    to: idMapping[t.to],
+    label: t.label,
   }));
 
-  // D: Return complete AutomataObject
   return {
     type: "DFA",
     alphabet: alphabet,
     states: dfaStates,
-    transitions: dfaTransitionObjects,
+    transitions: dfaTransitions,
     meta: {
       sourceRE: nfa.meta?.sourceRE ?? "",
-      description: "Generated by subset construction from NFA",
+      description: "Generated by subset construction",
     },
   };
+}
+
+export function testString(dfa, input) {
+  const startNode = dfa.states.find((s) => s.isStart);
+  if (!startNode) return false;
+
+  let current = startNode.id;
+
+  for (const ch of input) {
+    const t = dfa.transitions.find((t) => t.from === current && t.label === ch);
+    if (!t) return false;
+    current = t.to;
+  }
+
+  const finalNode = dfa.states.find((s) => s.id === current);
+  return finalNode ? finalNode.isAccept : false;
 }
