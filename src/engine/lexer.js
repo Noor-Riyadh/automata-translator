@@ -1,13 +1,14 @@
 export function tokenize(regex) {
   const tokens = [];
   for (const ch of regex) {
-    if (/[a-z0-9]/.test(ch))   tokens.push({ type: 'LITERAL', value: ch });
-    else if (ch === '|' || ch === '+') tokens.push({ type: 'UNION' });
-    else if (ch === '*')        tokens.push({ type: 'STAR' });
-    else if (ch === '?')        tokens.push({ type: 'OPT' });
-    else if (ch === '(')        tokens.push({ type: 'LPAREN' });
-    else if (ch === ')')        tokens.push({ type: 'RPAREN' });
-    else if (ch === 'ε')        tokens.push({ type: 'EPSILON' });
+    if (/[a-z0-9]/.test(ch)) tokens.push({ type: 'LITERAL', value: ch });
+    else if (ch === '|')           tokens.push({ type: 'UNION' });
+    else if (ch === '+')           tokens.push({ type: 'PLUS' });   //  that fixed for error num1 okay noor 
+    else if (ch === '*')           tokens.push({ type: 'STAR' });
+    else if (ch === '?')           tokens.push({ type: 'OPT' });
+    else if (ch === '(')           tokens.push({ type: 'LPAREN' });
+    else if (ch === ')')           tokens.push({ type: 'RPAREN' });
+    else if (ch === 'ε')           tokens.push({ type: 'EPSILON' });
   }
   return tokens;
 }
@@ -25,7 +26,10 @@ function parseUnion(tokens, pos) {
 
 function parseConcat(tokens, pos) {
   let [left, p] = parseStar(tokens, pos);
-  while (p < tokens.length && ['LITERAL','LPAREN','EPSILON'].includes(tokens[p].type)) {
+  while (
+    p < tokens.length &&
+    ['LITERAL', 'LPAREN', 'EPSILON'].includes(tokens[p].type)
+  ) {
     const [right, p2] = parseStar(tokens, p);
     left = { type: 'CONCAT', left, right };
     p = p2;
@@ -35,7 +39,10 @@ function parseConcat(tokens, pos) {
 
 function parseStar(tokens, pos) {
   let [node, p] = parseAtom(tokens, pos);
-  while (p < tokens.length && ['STAR','OPT'].includes(tokens[p].type)) {
+  while (
+    p < tokens.length &&
+    ['STAR', 'OPT', 'PLUS'].includes(tokens[p].type)  // ← PLUS added here
+  ) {
     node = { type: tokens[p].type, child: node };
     p++;
   }
