@@ -4,13 +4,15 @@
 
 **A web-based tool that accepts any formal language representation and automatically generates the other four equivalent forms — with live interactive visualization.**
 
-![React](https://img.shields.io/badge/React-18-61DAFB?style=flat&logo=react)
-![Vite](https://img.shields.io/badge/Vite-5-646CFF?style=flat&logo=vite)
-![Tailwind](https://img.shields.io/badge/Tailwind-3-38BDF8?style=flat&logo=tailwindcss)
-![License](https://img.shields.io/badge/License-MIT-green?style=flat)
+![React](https://img.shields.io/badge/React-18-61DAFB?style=for-the-badge&logo=react&logoColor=black)
+![Vite](https://img.shields.io/badge/Vite-5-646CFF?style=for-the-badge&logo=vite&logoColor=white)
+![Tailwind](https://img.shields.io/badge/Tailwind-3-38BDF8?style=for-the-badge&logo=tailwindcss&logoColor=white)
+![License](https://img.shields.io/badge/License-MIT-22c55e?style=for-the-badge)
 
-[Live Demo](#) · [Report Bug](#) · [Course](#)
 
+[![Live Demo](https://img.shields.io/badge/🚀_Live_Demo-Visit_App-emerald?style=for-the-badge&color=10b981)](https://automata-translator.vercel.app/)
+[![Report Bug](https://img.shields.io/badge/🐛_Report_Bug-Open_Issue-red?style=for-the-badge&color=ef4444)](https://github.com/Noor-Riyadh/automata-translator/issues)
+[![Course](https://img.shields.io/badge/🎓_CS416-Future_University-blue?style=for-the-badge&color=3b82f6)](https://fue.edu.eg)
 </div>
 
 ---
