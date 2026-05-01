@@ -8,6 +8,7 @@ import { englishToRE } from "./engine/englishToRE.js";
 import { minimizeDFA } from "./engine/minimize.js";
 import { dfaToRegex } from "./engine/stateElim.js";
 import TheoryWiki from "./wiki/TheoryWiki";
+import Toast from "./components/Toast.jsx";
 
 export default function App() {
   const [regexInput, setRegexInput] = useState("");
@@ -22,11 +23,16 @@ export default function App() {
   const [englishInput, setEnglishInput] = useState("");
   const [minDfa, setMinDfa] = useState(null);
   const [reOutput, setReOutput] = useState("");
-  const [showWiki, setShowWiki] = useState(false); // ← NEW
+  const [showWiki, setShowWiki] = useState(false);
+  const [toast, setToast] = useState(null);
 
   const clearSimulation = () => {
     setActiveStateId(null);
     setCurrentStepIndex(0);
+  };
+
+  const showToast = (message, type = "error") => {
+    setToast({ message, type });
   };
 
   const runPipeline = (regex) => {
@@ -52,14 +58,14 @@ export default function App() {
     try {
       runPipeline(regexInput);
     } catch (e) {
-      alert("Error: " + e.message);
+      showToast("Error: " + e.message);
     }
   };
 
   const handleEnglishGenerate = () => {
     const re = englishToRE(englishInput);
     if (!re) {
-      alert(
+      showToast(
         "Pattern not recognised. Please use one of the supported phrase formats.",
       );
       return;
@@ -68,13 +74,13 @@ export default function App() {
     try {
       runPipeline(re);
     } catch (e) {
-      alert("Error: " + e.message);
+      showToast("Error: " + e.message);
     }
   };
 
   const handleStep = () => {
     if (!dfa || !testInput) {
-      alert("Please generate a DFA and enter a test string first.");
+      showToast("Please generate a DFA and enter a test string first.");
       return;
     }
     if (activeStateId === null) {
@@ -83,7 +89,7 @@ export default function App() {
         setActiveStateId(startNode.id);
         setCurrentStepIndex(0);
       } else {
-        alert("Error: No start state found.");
+        showToast("Error: No start state found.");
       }
       return;
     }
@@ -96,15 +102,15 @@ export default function App() {
         setActiveStateId(transition.to);
         setCurrentStepIndex((prev) => prev + 1);
       } else {
-        alert(`Rejected: No transition for '${char}'`);
+        showToast(`Rejected: No transition for '${char}'`);
         clearSimulation();
       }
     } else {
       const finalNode = dfa.states.find((n) => n.id === activeStateId);
       if (finalNode?.isAccept) {
-        alert("Success: String Accepted!");
+        showToast("Success: String Accepted!");
       } else {
-        alert("Rejected: Non-accept state.");
+        showToast("Rejected: Non-accept state.");
       }
       clearSimulation();
     }
@@ -372,6 +378,15 @@ export default function App() {
           </>
         )}
       </div>
+
+      {/* ── TOAST NOTIFICATION ── */}
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
     </div>
   );
 }
