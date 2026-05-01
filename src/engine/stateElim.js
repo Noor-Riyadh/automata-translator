@@ -53,6 +53,38 @@ export function dfaToRegex(dfa) {
       if (labels[s]) delete labels[s][elim];
     }
   }
+  // Simplify common patterns in the generated RE string
+  function simplify(re) {
+    if (!re) return re;
 
-  return get(START, ACCEPT) ?? "ε";
+    let prev = null;
+    while (prev !== re) {
+      prev = re;
+
+      // Remove double ε: (ε)ε → ε
+      re = re.replace(/\(ε\)ε/g, "ε");
+
+      // Remove wrapping parens around single char: (a) → a
+      re = re.replace(/\(([a-z0-9ε])\)/g, "$1");
+
+      // Remove ε concatenation: εX → X and Xε → X
+      re = re.replace(/ε([^*+?|)(\s])/g, "$1");
+      re = re.replace(/([^*+?|)(\s])ε/g, "$1");
+
+      // Remove empty union branches: (|X) → X and (X|) → X
+      re = re.replace(/\(\|([^)]+)\)/g, "($1)");
+      re = re.replace(/\(([^)]+)\|\)/g, "($1)");
+
+      // Collapse (X)* → X* for single chars
+      re = re.replace(/\(([a-z0-9ε])\)\*/g, "$1*");
+
+      // Remove double parens: ((X)) → (X)
+      re = re.replace(/\(\(([^()]+)\)\)/g, "($1)");
+    }
+
+    return re;
+  }
+
+  return simplify(get(START, ACCEPT) ?? "ε");
+
 }

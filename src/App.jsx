@@ -330,13 +330,36 @@ export default function App() {
                     )}
                   </div>
                 </div>
-                <div className="bg-slate-800 rounded-lg p-4 border border-slate-700">
+                {/* <div className="bg-slate-800 rounded-lg p-4 border border-slate-700">
                   <h3 className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">
                     Regular Expression
                   </h3>
                   <div className="text-sm font-mono text-blue-300 break-all">
                     {reOutput ? (
                       reOutput
+                    ) : (
+                      <span className="text-slate-500 italic">
+                        No RE generated
+                      </span>
+                    )}
+                  </div>
+                </div> */}
+                <div className="bg-slate-800 rounded-lg p-4 border border-slate-700">
+                  <h3 className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">
+                    Regular Expression
+                  </h3>
+                  <div className="text-sm font-mono text-blue-300 break-all">
+                    {reOutput ? (
+                      reOutput.length > 120 ? (
+                        <details>
+                          <summary className="cursor-pointer text-blue-400 hover:text-blue-300 mb-1">
+                            Show RE (complex expression)
+                          </summary>
+                          {reOutput}
+                        </details>
+                      ) : (
+                        reOutput
+                      )
                     ) : (
                       <span className="text-slate-500 italic">
                         No RE generated
