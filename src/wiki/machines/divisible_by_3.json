@@ -1,0 +1,36 @@
+{
+  "type": "DFA",
+  "alphabet": ["0", "1"],
+  "states": [
+    {
+      "id": "r0",
+      "label": "r0",
+      "isStart": true,
+      "isAccept": true,
+      "position": { "x": 0, "y": 0 }
+    },
+    {
+      "id": "r1",
+      "label": "r1",
+      "isStart": false,
+      "isAccept": false,
+      "position": { "x": 0, "y": 0 }
+    },
+    {
+      "id": "r2",
+      "label": "r2",
+      "isStart": false,
+      "isAccept": false,
+      "position": { "x": 0, "y": 0 }
+    }
+  ],
+  "transitions": [
+    { "from": "r0", "to": "r0", "symbol": "0" },
+    { "from": "r0", "to": "r1", "symbol": "1" },
+    { "from": "r1", "to": "r2", "symbol": "0" },
+    { "from": "r1", "to": "r0", "symbol": "1" },
+    { "from": "r2", "to": "r1", "symbol": "0" },
+    { "from": "r2", "to": "r2", "symbol": "1" }
+  ],
+  "meta": { "description": "Binary numbers whose value is divisible by 3" }
+}

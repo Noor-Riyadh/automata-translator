@@ -220,6 +220,40 @@ export default function App() {
                   </div>
                 </div>
               </div>
+              <div className="pt-4 border-t border-slate-700">
+                <label className="text-sm text-slate-400 font-medium block mb-2">
+                  Load Example Machine
+                </label>
+                <select
+                  onChange={(e) => {
+                    if (!e.target.value) return;
+                    import(`./wiki/machines/${e.target.value}`).then((m) => {
+                      const machine = m.default;
+                      if (machine.type === "DFA") {
+                        setDfa(machine);
+                        setNfa(null);
+                        setView("DFA");
+                        const strings = generateStrings(machine, 5).filter(
+                          Boolean,
+                        );
+                        const cfg = dfaToCFG(machine);
+                        setGeneratedStrings(strings);
+                        setCfgRules(cfg.rules);
+                        setReOutput(dfaToRegex(machine));
+                      }
+                    });
+                  }}
+                  className="w-full p-2 rounded bg-slate-800 border border-slate-600 text-slate-300 text-sm"
+                >
+                  <option value="">Select an example...</option>
+                  <option value="ends_in_ab.json">Ends in ab</option>
+                  <option value="even_even.json">Even a's and b's</option>
+                  <option value="divisible_by_3.json">Divisible by 3</option>
+                  <option value="palindrome.json">
+                    Palindrome (simplified)
+                  </option>
+                </select>
+              </div>
             </aside>
 
             {/* CENTRE PANEL */}

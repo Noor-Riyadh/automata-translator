@@ -1,0 +1,36 @@
+{
+  "type": "DFA",
+  "alphabet": ["a", "b"],
+  "states": [
+    {
+      "id": "q0",
+      "label": "q0",
+      "isStart": true,
+      "isAccept": false,
+      "position": { "x": 0, "y": 0 }
+    },
+    {
+      "id": "q1",
+      "label": "q1",
+      "isStart": false,
+      "isAccept": false,
+      "position": { "x": 0, "y": 0 }
+    },
+    {
+      "id": "q2",
+      "label": "q2",
+      "isStart": false,
+      "isAccept": true,
+      "position": { "x": 0, "y": 0 }
+    }
+  ],
+  "transitions": [
+    { "from": "q0", "to": "q1", "symbol": "a" },
+    { "from": "q0", "to": "q0", "symbol": "b" },
+    { "from": "q1", "to": "q1", "symbol": "a" },
+    { "from": "q1", "to": "q2", "symbol": "b" },
+    { "from": "q2", "to": "q1", "symbol": "a" },
+    { "from": "q2", "to": "q0", "symbol": "b" }
+  ],
+  "meta": { "description": "All strings over {a,b} ending in ab" }
+}

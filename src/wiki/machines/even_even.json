@@ -1,0 +1,47 @@
+{
+  "type": "DFA",
+  "alphabet": ["a", "b"],
+  "states": [
+    {
+      "id": "q00",
+      "label": "q00",
+      "isStart": true,
+      "isAccept": true,
+      "position": { "x": 0, "y": 0 }
+    },
+    {
+      "id": "q10",
+      "label": "q10",
+      "isStart": false,
+      "isAccept": false,
+      "position": { "x": 0, "y": 0 }
+    },
+    {
+      "id": "q01",
+      "label": "q01",
+      "isStart": false,
+      "isAccept": false,
+      "position": { "x": 0, "y": 0 }
+    },
+    {
+      "id": "q11",
+      "label": "q11",
+      "isStart": false,
+      "isAccept": false,
+      "position": { "x": 0, "y": 0 }
+    }
+  ],
+  "transitions": [
+    { "from": "q00", "to": "q10", "symbol": "a" },
+    { "from": "q00", "to": "q01", "symbol": "b" },
+    { "from": "q10", "to": "q00", "symbol": "a" },
+    { "from": "q10", "to": "q11", "symbol": "b" },
+    { "from": "q01", "to": "q11", "symbol": "a" },
+    { "from": "q01", "to": "q00", "symbol": "b" },
+    { "from": "q11", "to": "q01", "symbol": "a" },
+    { "from": "q11", "to": "q10", "symbol": "b" }
+  ],
+  "meta": {
+    "description": "All strings over {a,b} with even number of a's and even number of b's"
+  }
+}

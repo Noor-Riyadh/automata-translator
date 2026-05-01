@@ -1,0 +1,65 @@
+{
+  "type": "DFA",
+  "alphabet": ["a", "b"],
+  "states": [
+    {
+      "id": "s0",
+      "label": "s0",
+      "isStart": true,
+      "isAccept": true,
+      "position": { "x": 0, "y": 0 }
+    },
+    {
+      "id": "s1",
+      "label": "s1",
+      "isStart": false,
+      "isAccept": true,
+      "position": { "x": 0, "y": 0 }
+    },
+    {
+      "id": "s2",
+      "label": "s2",
+      "isStart": false,
+      "isAccept": true,
+      "position": { "x": 0, "y": 0 }
+    },
+    {
+      "id": "s3",
+      "label": "s3",
+      "isStart": false,
+      "isAccept": true,
+      "position": { "x": 0, "y": 0 }
+    },
+    {
+      "id": "s4",
+      "label": "s4",
+      "isStart": false,
+      "isAccept": true,
+      "position": { "x": 0, "y": 0 }
+    },
+    {
+      "id": "dead",
+      "label": "dead",
+      "isStart": false,
+      "isAccept": false,
+      "position": { "x": 0, "y": 0 }
+    }
+  ],
+  "transitions": [
+    { "from": "s0", "to": "s1", "symbol": "a" },
+    { "from": "s0", "to": "s2", "symbol": "b" },
+    { "from": "s1", "to": "s3", "symbol": "a" },
+    { "from": "s1", "to": "s4", "symbol": "b" },
+    { "from": "s2", "to": "s4", "symbol": "a" },
+    { "from": "s2", "to": "s3", "symbol": "b" },
+    { "from": "s3", "to": "dead", "symbol": "a" },
+    { "from": "s3", "to": "dead", "symbol": "b" },
+    { "from": "s4", "to": "dead", "symbol": "a" },
+    { "from": "s4", "to": "dead", "symbol": "b" },
+    { "from": "dead", "to": "dead", "symbol": "a" },
+    { "from": "dead", "to": "dead", "symbol": "b" }
+  ],
+  "meta": {
+    "description": "Simplified palindrome-like DFA — accepts strings up to length 2 that read the same forwards and backwards. Full palindromes require a PDA."
+  }
+}
