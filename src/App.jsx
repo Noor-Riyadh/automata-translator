@@ -7,6 +7,7 @@ import AutomataCanvas from "./canvas/AutomataCanvas";
 import { englishToRE } from "./engine/englishToRE.js";
 import { minimizeDFA } from "./engine/minimize.js";
 import { dfaToRegex } from "./engine/stateElim.js";
+import TheoryWiki from "./wiki/TheoryWiki";
 
 export default function App() {
   const [regexInput, setRegexInput] = useState("");
@@ -264,6 +265,7 @@ export default function App() {
             </div>
           </div>
         </div>
+        <TheoryWiki />
       </aside>
     </div>
   );
