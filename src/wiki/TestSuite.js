@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { tokenize, parseRE }   from './lexer.js';
-import { regexToNFA }           from './thompson.js';
-import { englishToRE }          from './englishToRE.js';
+import { tokenize, parseRE }   from '../engine/lexer.js';
+import { regexToNFA }           from '../engine/thompson.js';
+import { englishToRE }          from '../engine/englishToRE.js';
 
 describe('englishToRE', () => {
   it('starts with', ()  => expect(englishToRE('Starts with ab')).toBe('ab(a+b)*'));
